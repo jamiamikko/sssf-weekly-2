@@ -26,7 +26,7 @@ const imgDataSchema = new mongoose.Schema({
   coordinates: {type: Object, required: true},
   thumbnail: String,
   image: String,
-  original: {type: String, required: true}
+  original: {type: String, required: true},
 });
 
 const ImgData = mongoose.model('ImgData', imgDataSchema);
@@ -38,7 +38,7 @@ const storage = multer.diskStorage({
       null,
       file.fieldname + '-' + Date.now() + path.extname(file.originalname)
     );
-  }
+  },
 });
 
 const upload = multer({storage: storage}).single('image');
@@ -98,9 +98,9 @@ app.post('/upload', upload, (req, res, next) => {
     details: req.body.description,
     coordinates: {
       lat: parseFloat(req.body.latitude),
-      lng: parseFloat(req.body.longitude)
+      lng: parseFloat(req.body.longitude),
     },
-    original: req.file.path.replace('public/', '')
+    original: req.file.path.replace('public/', ''),
   };
 
   convertImage(req.file, 320, 300)

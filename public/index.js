@@ -117,7 +117,7 @@ const switchTab = (event) => {
 const getCoordinates = () => {
   return {
     lat: marker.getPosition().lat(),
-    lng: marker.getPosition().lng()
+    lng: marker.getPosition().lng(),
   };
 };
 
@@ -132,7 +132,7 @@ const submitForm = (event) => {
 
   fetch('http://localhost:3000/upload', {
     method: 'POST',
-    body: formData
+    body: formData,
   })
     .then((res) => {
       console.log('Success');
