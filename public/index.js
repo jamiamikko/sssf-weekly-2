@@ -147,9 +147,7 @@ const submitForm = (event) => {
 
 const getData = () =>
   new Promise((resolve, reject) => {
-    const request = new Request('./data.json');
-
-    fetch(request)
+    fetch('http://localhost:3000/get-images')
       .then((res) => {
         resolve(res.json());
       })
@@ -163,6 +161,14 @@ const handleData = (data) => {
   filterArray = picArray;
 
   initThumbnails(picArray);
+};
+
+const init = () => {
+  getData()
+    .then((res) => {
+      handleData(res);
+    })
+    .catch((err) => console.log(err));
 
   const buttons = document.querySelectorAll('.thumbnail__button');
 
@@ -200,14 +206,6 @@ const handleData = (data) => {
 
   displayDateBtn.addEventListener('click', toggleDate, false);
   eventForm.addEventListener('submit', submitForm, false);
-};
-
-const init = () => {
-  getData()
-    .then((res) => {
-      handleData(res);
-    })
-    .catch((err) => console.log(err));
 };
 
 init();

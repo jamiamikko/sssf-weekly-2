@@ -3,7 +3,33 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const sharp = require('sharp');
-const fs = require('fs');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/test');
+
+const db = mongoose.connection;
+
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
+db.on('error', (err) => {
+  console.log(err);
+});
+
+const imgDataSchema = new mongoose.Schema({
+  id: {type: Number, required: true},
+  time: {type: String, required: true},
+  category: {type: String, required: true},
+  title: {type: String, required: true},
+  details: {type: String, required: true},
+  coordinates: {type: Object, required: true},
+  thumbnail: String,
+  image: String,
+  original: {type: String, required: true}
+});
+
+const ImgData = mongoose.model('ImgData', imgDataSchema);
 
 const storage = multer.diskStorage({
   destination: 'public/uploads/',
@@ -46,10 +72,18 @@ const convertImage = (file, height, width) =>
       });
   });
 
-app.post('/upload', upload, (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
-  
+app.get('/get-images', (req, res, next) => {
+  ImgData.find({}, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(data);
+      res.send(data);
+    }
+  });
+});
+
+app.post('/upload', upload, (req, res, next) => {
   if (!req.body || !req.file) sendStatus(400);
   const date = new Date()
     .toISOString()
@@ -77,14 +111,9 @@ app.post('/upload', upload, (req, res) => {
         .then((response) => {
           dataObj.image = response.replace('public/', '');
 
-          fs.readFile('./public/data.json', (err, data) => {
-            const json = JSON.parse(data);
-
-            json.push(dataObj);
-
-            fs.writeFile('./public/data.json', JSON.stringify(json));
-            res.sendStatus(200);
-          });
+          const data = new ImgData(dataObj);
+          data.save();
+          res.sendStatus(200);
         })
         .catch((err) => {
           console.log(err);
