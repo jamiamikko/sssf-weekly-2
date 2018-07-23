@@ -130,7 +130,7 @@ const submitForm = (event) => {
 
   const formData = new FormData(eventForm);
 
-  fetch('http://localhost:3000/upload', {
+  fetch('http://sssf-weekly-2.paas.datacenter.fi/upload', {
     method: 'POST',
     body: formData,
   })
@@ -147,7 +147,7 @@ const submitForm = (event) => {
 
 const getData = () =>
   new Promise((resolve, reject) => {
-    fetch('http://localhost:3000/get-images')
+    fetch('http://sssf-weekly-2.paas.datacenter.fi/get-images')
       .then((res) => {
         resolve(res.json());
       })
