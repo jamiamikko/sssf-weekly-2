@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
@@ -5,7 +6,28 @@ const path = require('path');
 const sharp = require('sharp');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/test');
+console.log(
+  `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${
+    process.env.DB_HOST
+  }:${process.env.DB_PORT}/images`
+);
+
+const port = process.env.PORT || 3000;
+
+mongoose
+  .connect(
+    `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${
+      process.env.DB_HOST
+    }:${process.env.DB_PORT}/images`,
+    {useNewUrlParser: true}
+  )
+  .then((res) => {
+    console.log(res);
+    app.listen(port, () => console.log('Listening to port 3000'));
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const db = mongoose.connection;
 
@@ -42,8 +64,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage: storage}).single('image');
-
-const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(bodyParser.json());
@@ -98,9 +118,9 @@ app.post('/upload', upload, (req, res, next) => {
     details: req.body.description,
     coordinates: {
       lat: parseFloat(req.body.latitude),
-      lng: parseFloat(req.body.longitude),
+      lng: parseFloat(req.body.longitude)
     },
-    original: req.file.path.replace('public/', ''),
+    original: req.file.path.replace('public/', '')
   };
 
   convertImage(req.file, 320, 300)
@@ -125,5 +145,3 @@ app.post('/upload', upload, (req, res, next) => {
       sendStatus(400);
     });
 });
-
-app.listen(port, () => console.log('Listening to port 3000'));
