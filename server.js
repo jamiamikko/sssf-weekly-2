@@ -118,9 +118,9 @@ app.post('/upload', upload, (req, res, next) => {
     details: req.body.description,
     coordinates: {
       lat: parseFloat(req.body.latitude),
-      lng: parseFloat(req.body.longitude)
+      lng: parseFloat(req.body.longitude),
     },
-    original: req.file.path.replace('public/', '')
+    original: req.file.path.replace('public/', ''),
   };
 
   convertImage(req.file, 320, 300)
@@ -137,11 +137,11 @@ app.post('/upload', upload, (req, res, next) => {
         })
         .catch((err) => {
           console.log(err);
-          sendStatus(400);
+          res.sendStatus(400);
         });
     })
     .catch((err) => {
       console.log(err);
-      sendStatus(400);
+      res.sendStatus(400);
     });
 });
