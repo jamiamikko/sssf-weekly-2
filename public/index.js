@@ -117,7 +117,7 @@ const switchTab = (event) => {
 const getCoordinates = () => {
   return {
     lat: marker.getPosition().lat(),
-    lng: marker.getPosition().lng()
+    lng: marker.getPosition().lng(),
   };
 };
 
@@ -132,7 +132,7 @@ const submitForm = (event) => {
 
   fetch('http://sssf-weekly-2.paas.datacenter.fi/upload', {
     method: 'POST',
-    body: formData
+    body: formData,
   })
     .then((res) => {
       console.log('Success');
@@ -161,18 +161,18 @@ const handleData = (data) => {
   filterArray = picArray;
 
   initThumbnails(picArray);
+
+  const buttons = document.querySelectorAll('.thumbnail__button');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', openModal, false);
+  });
 };
 
 const init = () => {
   getData()
     .then((res) => {
       handleData(res);
-
-      const buttons = document.querySelectorAll('.thumbnail__button');
-
-      buttons.forEach((button) => {
-        button.addEventListener('click', openModal, false);
-      });
     })
     .catch((err) => console.log(err));
 
